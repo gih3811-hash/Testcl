@@ -1,3 +1,4 @@
+import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 import time
@@ -170,7 +171,6 @@ class FinalContestServer(BaseHTTPRequestHandler):
         self.wfile.write(html.encode('utf-8'))
 
     def do_POST(self):
-        # تم تصحيح ترتيب الأسطر هنا لضمان السرعة ومنع التعليق
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length).decode('utf-8')
         params = parse_qs(post_data)
@@ -198,9 +198,10 @@ class FinalContestServer(BaseHTTPRequestHandler):
         </style></head><body><div class="overlay"></div><div class="msg-box"><h1 style="font-size:50px; margin:0;">{icon}</h1><h2>{title}</h2><p>{msg}</p><a href="/vote" style="text-decoration:none; color:#0d3b3f; font-weight:bold;">العودة</a></div></body></html>"""
         self.wfile.write(html.encode('utf-8'))
 
-PORT = 8080
+# --- الجزء المعدل ليعمل على Render عالمياً ---
+PORT = int(os.environ.get("PORT", 8080))
 server = HTTPServer(('0.0.0.0', PORT), FinalContestServer)
 server.allow_reuse_address = True
-print(f"🚀 السيرفر يعمل بالتصميم الرسمي الكامل على {PORT}")
+print(f"🚀 السيرفر يعمل الآن عالمياً على المنفذ {PORT}")
 server.serve_forever()
 
